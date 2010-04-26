@@ -1,16 +1,16 @@
 #!/usr/bin/env ruby
 
 require 'rubygems'
-require 'right_aws'
+require 'aws'
 require 'active_support'
 
 unless ENV['SNAPSHOT_VOLUME']
   raise "Please provide a volume ID with SNAPSHOT_VOLUME environment variable"
 end
 
-ec2 = Rightscale::Ec2.new(ENV['AMAZON_ACCESS_KEY_ID'], 
-                          ENV['AMAZON_SECRET_ACCESS_KEY'], 
-                          :region => (ENV['REGION'] || 'eu-west-1'))
+ec2 = Aws::Ec2.new(ENV['AMAZON_ACCESS_KEY_ID'], 
+                   ENV['AMAZON_SECRET_ACCESS_KEY'], 
+                   :region => (ENV['REGION'] || 'eu-west-1'))
 
 snapshots = ec2.describe_snapshots
 
