@@ -1,26 +1,26 @@
 #!/usr/bin/env ruby
 
 require 'rubygems'
-require 'aws'
+require 'right_aws'
 require 'active_support'
 
 unless ENV['SNAPSHOT_VOLUME']
   raise "Please provide a volume ID with SNAPSHOT_VOLUME environment variable"
 end
 
-ec2 = Aws::Ec2.new(ENV['AMAZON_ACCESS_KEY_ID'], 
-                   ENV['AMAZON_SECRET_ACCESS_KEY'], 
-                   :region => (ENV['REGION'] || 'eu-west-1'))
+ec2 = RightAws::Ec2.new(ENV['AMAZON_ACCESS_KEY_ID'], 
+                        ENV['AMAZON_SECRET_ACCESS_KEY'], 
+                        :region => (ENV['REGION'] || 'eu-west-1'))
 
 snapshots = ec2.describe_snapshots
 
 old_snapshots = snapshots.select do |snapshot|
-  (snapshot[:aws_started_at] < 1.week.ago) &&
+  (Time.parse(snapshot[:aws_started_at]) < 1.week.ago) &&
     snapshot[:aws_volume_id] == ENV['SNAPSHOT_VOLUME']
 end
 
 snapshots_since_this_morning = snapshots.select do |snapshot|
-  (snapshot[:aws_started_at] > Date.today) &&
+  (Time.parse(snapshot[:aws_started_at]) > Date.today) &&
     snapshot[:aws_volume_id] == ENV['SNAPSHOT_VOLUME']
 end
 
