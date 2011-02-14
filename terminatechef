@@ -1,0 +1,6 @@
+#!/bin/bash
+
+ec2-terminate-instances $1
+knife node delete $1 -y
+knife client delete $1 -y
+exit 0
