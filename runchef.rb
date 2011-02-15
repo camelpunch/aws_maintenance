@@ -20,7 +20,7 @@ instances = ec2.run_instances(chef_32bit,
                               "m1.small",
                               kernel = nil,
                               ramdisk = nil,
-                              zone = "eu-west-1b",
+                              zone = "eu-west-1a",
                               monitoring = nil,
                               subnet_id = nil,
                               disable_api_termination = nil,
@@ -34,7 +34,15 @@ instances = ec2.run_instances(chef_32bit,
 
 instance_id = instances.first[:aws_instance_id]
 
+state = ''
+while state != 'running'
+  state = ec2.describe_instances(instance_id).first[:aws_state]
+  puts "#{instance_id} is #{state}"
+  sleep 2
+end
+
 if sdf_volume
+  puts "attaching #{sdf_volume} to /dev/sdf"
   ec2.attach_volume(sdf_volume, instance_id, '/dev/sdf')
 end
 
