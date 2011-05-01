@@ -7,17 +7,19 @@ require 'ruby-debug'
 site = ARGV[0]
 sdf_volume = ARGV[1]
 
-chef_32bit = 'ami-67251113'
+group = ARGV[2] || 'default'
+ami = ARGV[3] || 'ami-8d3502f9'
+size = ARGV[4] || 'm1.small'
 
 ec2 = RightAws::Ec2.new(ENV['AMAZON_ACCESS_KEY_ID'], ENV['AMAZON_SECRET_ACCESS_KEY'])
-instances = ec2.run_instances(chef_32bit,
+instances = ec2.run_instances(ami,
                               min = 1,
                               max = 1,
-                              groups = ['default'],
+                              groups = [group],
                               key = 'camelpunch',
                               user_data = File.read("/Users/andrew/dev/chef-repo/roles/#{site}-data.json"),
                               "public",
-                              "m1.small",
+                              size,
                               kernel = nil,
                               ramdisk = nil,
                               zone = "eu-west-1a",
@@ -41,7 +43,7 @@ while state != 'running'
   sleep 2
 end
 
-if sdf_volume
+if sdf_volumn && !sdf_volume.empty?
   puts "attaching #{sdf_volume} to /dev/sdf"
   ec2.attach_volume(sdf_volume, instance_id, '/dev/sdf')
 end
@@ -53,7 +55,7 @@ while dns_name.empty?
   dns_name = instances.first[:dns_name]
 end
 
-sleepytime = 17
+sleepytime = 20
 puts "sleeping #{sleepytime} seconds"
 sleep sleepytime
 
