@@ -12,7 +12,7 @@ options = {
 }
 
 cmdline_options = OptionParser.new do |opts|
-  opts.banner = "Usage: ruchef.rb [options]"
+  opts.banner = "Usage: runchef.rb [options]"
 
   opts.on '-r', '--role ROLE' do |role|
     options[:role] = role
