@@ -6,6 +6,7 @@ require 'ruby-debug'
 require 'optparse'
 
 options = {
+  :key => 'camelpunch',
   :ami => 'ami-359ea941',
   :group => 'default',
   :size => 'm1.small',
@@ -13,6 +14,10 @@ options = {
 
 cmdline_options = OptionParser.new do |opts|
   opts.banner = "Usage: runchef.rb [options]"
+
+  opts.on '-k', '--key KEY' do |key|
+    options[:key] = key
+  end
 
   opts.on '-r', '--role ROLE' do |role|
     options[:role] = role
@@ -42,7 +47,7 @@ instances = ec2.run_instances(options[:ami],
                               min = 1,
                               max = 1,
                               groups = [options[:group]],
-                              key = 'camelpunch',
+                              key = options[:key],
                               user_data = File.read("/Users/andrew/dev/chef-repo/roles/#{options[:role]}-data.json"),
                               addressing = "public",
                               options[:size],
