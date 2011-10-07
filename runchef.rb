@@ -10,6 +10,7 @@ options = {
   :ami => 'ami-359ea941',
   :group => 'default',
   :size => 'm1.small',
+  :zone => 'eu-west-1a',
 }
 
 cmdline_options = OptionParser.new do |opts|
@@ -38,6 +39,10 @@ cmdline_options = OptionParser.new do |opts|
   opts.on '-s', '--size SIZE' do |size|
     options[:size] = size
   end
+
+  opts.on '-z', '--zone ZONE' do |zone|
+    options[:zone] = zone
+  end
 end
 
 cmdline_options.parse!
@@ -53,7 +58,7 @@ instances = ec2.run_instances(options[:ami],
                               options[:size],
                               kernel = nil,
                               ramdisk = nil,
-                              zone = "eu-west-1a",
+                              zone = options[:zone],
                               monitoring = nil,
                               subnet_id = nil,
                               disable_api_termination = nil,
