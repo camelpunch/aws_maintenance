@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ec2din -F "tag:Name=$1" | sed -n -e '/^INSTANCE/p' | cut -f 4
