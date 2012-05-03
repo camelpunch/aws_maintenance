@@ -2,7 +2,6 @@
 
 require 'rubygems'
 require 'right_aws'
-require 'ruby-debug'
 require 'optparse'
 
 options = {
